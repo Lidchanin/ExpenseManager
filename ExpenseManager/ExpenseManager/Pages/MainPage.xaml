@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:pages="clr-namespace:ExpenseManager.Pages;assembly=ExpenseManager"
+                xmlns:viewModels="clr-namespace:ExpenseManager.ViewModels;assembly=ExpenseManager"
+                x:Class="ExpenseManager.Pages.MainPage">
+
+    <pages:BasePage.BindingContext>
+        <viewModels:MainViewModel/>
+    </pages:BasePage.BindingContext>
+
+    <pages:BasePage.Content>
+        <ScrollView>
+            <StackLayout Orientation="Vertical">
+                <Entry Text="{Binding ExpenseName}" Placeholder="Expense name"/>
+                <Entry Text="{Binding ExpenseCost}" Placeholder="Expense cost"/>
+                <Entry Text="{Binding CategoryName}" Placeholder="Category"/>
+                <DatePicker Date="{Binding ExpenseTimestamp}"/>
+                <Button Text="ADD"
+                        Command="{Binding AddCommand}"/>
+                <BoxView HeightRequest="3"
+                         Color="Black"/>
+            </StackLayout>
+        </ScrollView>
+    </pages:BasePage.Content>
+
+</pages:BasePage>
