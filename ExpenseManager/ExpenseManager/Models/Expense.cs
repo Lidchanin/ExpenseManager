@@ -18,6 +18,6 @@ namespace ExpenseManager.Models
         public DateTime Timestamp { get; set; }
 
         [SetClientClassMemberName("category")]
-        public Category Category { get; set; }
+        public int Category { get; set; }
     }
 }

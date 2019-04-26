@@ -1,20 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
+using ExpenseManager.Pages.Popups;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms.Xaml;
 
 namespace ExpenseManager.Pages
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class ExpensesPage : ContentPage
-	{
-		public ExpensesPage ()
-		{
-			InitializeComponent ();
-		}
-	}
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class ExpensesPage
+    {
+        public ExpensesPage()
+        {
+            InitializeComponent();
+        }
+
+        private async void AddExpenseButton_OnClicked(object sender, EventArgs e)
+        {
+            await PopupNavigation.Instance.PushAsync(new AddExpensePopup());
+        }
+    }
 }

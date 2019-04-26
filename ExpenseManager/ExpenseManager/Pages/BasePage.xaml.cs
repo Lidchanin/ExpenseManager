@@ -6,7 +6,8 @@ namespace ExpenseManager.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class BasePage
     {
-        public readonly IServiceClient ApiService = ServiceClient.Instance;
+        protected readonly IServiceClient ApiService = ServiceClient.Instance;
+        protected readonly ISupportPopupService SupportPopupService = new SupportPopupService();
 
         public BasePage()
         {

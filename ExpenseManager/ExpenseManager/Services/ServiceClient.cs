@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Services
 {
-    public class ServiceClient : IServiceClient
+    public sealed class ServiceClient : IServiceClient
     {
         #region Instance
 
@@ -29,35 +29,12 @@ namespace ExpenseManager.Services
 
         #endregion ApplicationId and ApiKeys
 
-        private readonly IDataStore<Category> _categoryDataStore;
         private readonly IDataStore<Expense> _expenseDataStore;
 
         public ServiceClient()
         {
-            _categoryDataStore = BackendlessAPI.Backendless.Data.Of<Category>();
             _expenseDataStore = BackendlessAPI.Backendless.Data.Of<Expense>();
         }
-
-        #region Categories operations
-
-        public Task<CommonResponse<IList<Category>>> GetCategories() =>
-            ExecuteWithGeneralExceptionHandling(() =>
-            {
-                var task = _categoryDataStore.FindAsync(DataQueryBuilder.Create());
-
-                return task.ContinueWith(resultTask => resultTask.Result);
-            });
-
-        public Task<CommonResponse<Category>> AddCategory(Category category) =>
-            ExecuteWithGeneralExceptionHandling(() => _categoryDataStore.SaveAsync(category));
-
-        public Task<CommonResponse<Category>> UpdateCategory(Category category) => 
-            AddCategory(category);
-
-        public Task<CommonResponse<long>> DeleteCategory(Category category) =>
-            ExecuteWithGeneralExceptionHandling(() => _categoryDataStore.RemoveAsync(category));
-
-        #endregion Categories operations
 
         #region Expenses operations
 

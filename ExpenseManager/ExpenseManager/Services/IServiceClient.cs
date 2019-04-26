@@ -6,18 +6,6 @@ namespace ExpenseManager.Services
 {
     public interface IServiceClient
     {
-        #region Categories operations
-
-        Task<CommonResponse<IList<Category>>> GetCategories();
-
-        Task<CommonResponse<Category>> AddCategory(Category category);
-
-        Task<CommonResponse<Category>> UpdateCategory(Category category);
-
-        Task<CommonResponse<long>> DeleteCategory(Category category);
-
-        #endregion Categories operations
-
         #region Expenses operations
 
         Task<CommonResponse<IList<Expense>>> GetExpensesForAllTime();

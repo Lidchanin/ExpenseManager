@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<popups:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  xmlns:viewModels="clr-namespace:ExpenseManager.ViewModels;assembly=ExpenseManager"
+                  xmlns:popups="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                  x:Class="ExpenseManager.Pages.Popups.AddExpensePopup">
+
+    <popups:PopupPage.BindingContext>
+        <viewModels:AddExpenseViewModel/>
+    </popups:PopupPage.BindingContext>
+
+    <popups:PopupPage.Content>
+        <StackLayout HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     BackgroundColor="White">
+            <Entry Text="{Binding ExpenseName}"
+                   Placeholder="Exp name"/>
+            <Entry Text="{Binding ExpenseCost}"
+                   Placeholder="Exp cost"/>
+            <Picker ItemsSource="{Binding CategoriesList}"
+                    SelectedIndex="{Binding Category, Converter={StaticResource IntEnumConverter}}"/>
+            <DatePicker Date="{Binding ExpenseTimestamp}"/>
+            <Button Text="Add"
+                    Command="{Binding AddExpenseCommand}"/>
+        </StackLayout>
+    </popups:PopupPage.Content>
+</popups:PopupPage>

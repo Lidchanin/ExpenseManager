@@ -1,14 +1,13 @@
 ﻿using ExpenseManager.Services;
+using System.ComponentModel;
 
 namespace ExpenseManager.ViewModels
 {
-    public class BaseViewModel
+    public class BaseViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         protected readonly IServiceClient ApiService = ServiceClient.Instance;
-
-        public BaseViewModel()
-        {
-
-        }
+        protected readonly ISupportPopupService SupportPopupService = new SupportPopupService();
     }
 }
