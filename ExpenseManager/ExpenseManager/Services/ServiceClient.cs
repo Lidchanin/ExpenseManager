@@ -112,12 +112,12 @@ namespace ExpenseManager.Services
                     response.Message = ConnectivityHelper.ConnectionErrorMessage;
                 }
             }
-            catch (HttpListenerException ex)
+            catch (BackendlessException ex)
             {
                 response.IsSuccess = false;
                 response.Message = ex.Message;
             }
-            catch (BackendlessException ex)
+            catch (HttpListenerException ex)
             {
                 response.IsSuccess = false;
                 response.Message = ex.Message;
