@@ -1,4 +1,6 @@
-﻿using Xamarin.Forms.Xaml;
+﻿using System;
+using Rg.Plugins.Popup.Services;
+using Xamarin.Forms.Xaml;
 
 namespace ExpenseManager.Pages.Popups
 {
@@ -13,5 +15,8 @@ namespace ExpenseManager.Pages.Popups
 	    protected override bool OnBackButtonPressed() => true;
 
 	    protected override bool OnBackgroundClicked() => false;
+
+	    private async void CancelButton_OnClicked(object sender, EventArgs e) =>
+	        await PopupNavigation.Instance.PopAsync();
 	}
 }

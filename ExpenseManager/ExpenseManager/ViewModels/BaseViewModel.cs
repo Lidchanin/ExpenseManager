@@ -7,7 +7,8 @@ namespace ExpenseManager.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected readonly IServiceClient ApiService = ServiceClient.Instance;
+        protected readonly IBackendlessServiceClient BackendlessApi = BackendlessServiceClient.Instance;
+
         protected readonly ISupportPopupService SupportPopupService = new SupportPopupService();
     }
 }

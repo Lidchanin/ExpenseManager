@@ -11,6 +11,8 @@ namespace ExpenseManager.Pages
         public ExpensesPage()
         {
             InitializeComponent();
+
+            ViewModel.InitData();
         }
 
         private async void AddExpenseButton_OnClicked(object sender, EventArgs e)

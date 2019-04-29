@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using ExpenseManager.Models;
 using Xamarin.Forms;
 
 namespace ExpenseManager.ViewModels
@@ -27,7 +28,16 @@ namespace ExpenseManager.ViewModels
         {
             await SupportPopupService.ShowLoadingAsync();
 
-            //todo add expense to db
+            var expense = new Expense
+            {
+                Name = ExpenseName,
+                Cost = ExpenseCost,
+                Timestamp = ExpenseTimestamp,
+                Category = (int) Category
+            };
+
+            var temp = await BackendlessApi.AddExpense(expense);
+            expense = temp.Content;
 
             await SupportPopupService.HideLastPopupAsync();
         }

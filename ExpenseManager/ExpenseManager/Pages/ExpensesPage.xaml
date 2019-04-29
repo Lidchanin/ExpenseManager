@@ -1,11 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <pages:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                xmlns:pages="clr-namespace:ExpenseManager.Pages;assembly=ExpenseManager"
                 xmlns:helpers="clr-namespace:ExpenseManager.Helpers;assembly=ExpenseManager"
+                xmlns:pages="clr-namespace:ExpenseManager.Pages;assembly=ExpenseManager"
                 xmlns:viewModels="clr-namespace:ExpenseManager.ViewModels;assembly=ExpenseManager"
                 x:Class="ExpenseManager.Pages.ExpensesPage"
                 Title="ExpensesPageTitle">
+
+    <pages:BasePage.BindingContext>
+        <viewModels:ExpensesViewModel x:Name="ViewModel"/>
+    </pages:BasePage.BindingContext>
 
     <!--#region Navigation Bar-->
     <NavigationPage.TitleView>
@@ -30,9 +34,11 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <ListView Grid.Row="0"/>
+            <ListView ItemsSource="{Binding Expenses}"
+                      Grid.Row="0"/>
 
             <Button Text="Add expense"
                     Clicked="AddExpenseButton_OnClicked"

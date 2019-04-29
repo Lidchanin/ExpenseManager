@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Services
 {
-    public sealed class ServiceClient : IServiceClient
+    public sealed class BackendlessServiceClient : IBackendlessServiceClient
     {
         #region Instance
 
-        private static ServiceClient _instance;
+        private static BackendlessServiceClient _instance;
 
-        public static readonly ServiceClient Instance = _instance ?? (_instance = new ServiceClient());
+        public static readonly BackendlessServiceClient Instance = _instance ?? (_instance = new BackendlessServiceClient());
 
         #endregion
 
@@ -31,10 +31,7 @@ namespace ExpenseManager.Services
 
         private readonly IDataStore<Expense> _expenseDataStore;
 
-        public ServiceClient()
-        {
-            _expenseDataStore = BackendlessAPI.Backendless.Data.Of<Expense>();
-        }
+        private BackendlessServiceClient() => _expenseDataStore = BackendlessAPI.Backendless.Data.Of<Expense>();
 
         #region Expenses operations
 

@@ -22,6 +22,8 @@
             <DatePicker Date="{Binding ExpenseTimestamp}"/>
             <Button Text="Add"
                     Command="{Binding AddExpenseCommand}"/>
+            <Button Text="Cancel"
+                    Clicked="CancelButton_OnClicked"/>
         </StackLayout>
     </popups:PopupPage.Content>
 </popups:PopupPage>

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ExpenseManager.Services
 {
-    public interface IServiceClient
+    public interface IBackendlessServiceClient
     {
         #region Expenses operations
 

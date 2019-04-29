@@ -2,7 +2,7 @@
 using ExpenseManager.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static ExpenseManager.Services.ServiceClient;
+using static ExpenseManager.Services.BackendlessServiceClient;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ExpenseManager
