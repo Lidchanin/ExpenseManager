@@ -16,12 +16,9 @@
                       x:FieldModifier="public">
                 <ListView.ItemsSource>
                     <x:Array Type="{x:Type local:MasterPageItem}">
-                        <local:MasterPageItem Title="No title" 
+                        <local:MasterPageItem Title="Start page" 
                                               IconSource="{x:Static helpers:ConstantHelper.IconPlaceholder}" 
-                                              TargetType="{x:Type pages:ExpensesPage}" />
-                        <local:MasterPageItem Title="No title" 
-                                              IconSource="{x:Static helpers:ConstantHelper.IconPlaceholder}" 
-                                              TargetType="{x:Type pages:ExpensesPage}" />
+                                              TargetType="{x:Type pages:StartPage}" />
                         <local:MasterPageItem Title="No title" 
                                               IconSource="{x:Static helpers:ConstantHelper.IconPlaceholder}" 
                                               TargetType="{x:Type pages:ExpensesPage}" />

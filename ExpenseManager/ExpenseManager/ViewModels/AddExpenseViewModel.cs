@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using ExpenseManager.Models;
+using ExpenseManager.Services;
 using Xamarin.Forms;
 
 namespace ExpenseManager.ViewModels
@@ -12,7 +13,7 @@ namespace ExpenseManager.ViewModels
     {
         public string ExpenseName { get; set; }
         public double ExpenseCost { get; set; }
-        public DateTime ExpenseTimestamp { get; set; }
+        public DateTime ExpenseTimestamp { get; set; } = DateTime.Today;
         public ExpenseCategories Category { get; set; }
 
         public IEnumerable<string> CategoriesList { get; } = Enum.GetNames(typeof(ExpenseCategories)).ToList();
@@ -33,7 +34,7 @@ namespace ExpenseManager.ViewModels
                 Name = ExpenseName,
                 Cost = ExpenseCost,
                 Timestamp = ExpenseTimestamp,
-                Category = (int) Category
+                Category = Category
             };
 
             var temp = await BackendlessApi.AddExpense(expense);

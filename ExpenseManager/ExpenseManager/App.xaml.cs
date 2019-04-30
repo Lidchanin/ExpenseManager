@@ -1,8 +1,6 @@
 ﻿using ExpenseManager.Helpers;
 using ExpenseManager.Pages;
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static ExpenseManager.Services.BackendlessServiceClient;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ExpenseManager
@@ -12,9 +10,6 @@ namespace ExpenseManager
         public App()
         {
             InitializeComponent();
-
-            BackendlessAPI.Backendless.InitApp(ApplicationId,
-                Device.RuntimePlatform == Device.Android ? AndroidApiKey : IOSApiKey);
 
             MainPage = new MainPage();
         }

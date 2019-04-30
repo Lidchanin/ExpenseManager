@@ -1,16 +1,14 @@
-﻿using BackendlessAPI.Data;
-using BackendlessAPI.Exception;
-using BackendlessAPI.Persistence;
-using ExpenseManager.Helpers;
+﻿using ExpenseManager.Extensions;
 using ExpenseManager.Models;
 using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ExpenseManager.Services
 {
-    public sealed class BackendlessServiceClient : IBackendlessServiceClient
+    public sealed class BackendlessServiceClient : BaseServiceClient, IBackendlessServiceClient
     {
         #region Instance
 
@@ -18,93 +16,76 @@ namespace ExpenseManager.Services
 
         public static readonly BackendlessServiceClient Instance = _instance ?? (_instance = new BackendlessServiceClient());
 
-        #endregion
+        #endregion Instance
 
         #region ApplicationId and ApiKeys
 
-        public const string ApplicationId = "81017193-8323-8622-FF92-E4A1848F3700";
-        public const string DotNetApiKey = "8AE846DF-06ED-154E-FFA9-3DD743CF2400";
-        public const string AndroidApiKey = "FE0E7743-7626-C758-FF3D-A63DF26D9D00";
-        public const string IOSApiKey = "C9AACAA4-6A04-B956-FF2D-0CE5D50D5200";
+        private const string ApplicationId = "81017193-8323-8622-FF92-E4A1848F3700";
+        private const string DotNetApiKey = "8AE846DF-06ED-154E-FFA9-3DD743CF2400";
+        private const string RestApiKey = "5A6AF534-4AB4-F5F7-FF87-6F6B536AD500";
+        private const string AndroidApiKey = "FE0E7743-7626-C758-FF3D-A63DF26D9D00";
+        private const string IOSApiKey = "C9AACAA4-6A04-B956-FF2D-0CE5D50D5200";
 
         #endregion ApplicationId and ApiKeys
 
-        private readonly IDataStore<Expense> _expenseDataStore;
+        #region Request support strings
 
-        private BackendlessServiceClient() => _expenseDataStore = BackendlessAPI.Backendless.Data.Of<Expense>();
+        private const string WhereKeyword = "where=";
+        private const string SortByKeyword = "sortBy=";
+        private const string AndKeyword = "%20AND%20";
+        private const string AscKeyword = "%20asc";
+        private const string DescKeyword = "%20desc";
 
-        #region Expenses operations
+        #endregion Request support strings
 
-        public Task<CommonResponse<IList<Expense>>> GetExpensesForAllTime() =>
-            ExecuteWithGeneralExceptionHandling(() =>
-            {
-                var task = _expenseDataStore.FindAsync(DataQueryBuilder.Create());
+        private const string DataServicePrefix = "data";
+        private const string UserServicePrefix = "users";
 
-                return task.ContinueWith(resultTask => resultTask.Result);
-            });
+        private const string ExpensesTableName = "Expenses";
 
-        public Task<CommonResponse<Expense>> AddExpense(Expense expense) =>
-            ExecuteWithGeneralExceptionHandling(() => _expenseDataStore.SaveAsync(expense));
-
-        public Task<CommonResponse<Expense>> UpdateExpense(Expense expense) =>
-            AddExpense(expense);
-
-        public Task<CommonResponse<long>> DeleteExpense(Expense expense) =>
-            ExecuteWithGeneralExceptionHandling(() => _expenseDataStore.RemoveAsync(expense));
-
-        #endregion Expenses operations
-
-        #region private methods
-
-        private static async Task<CommonResponse<T>> ExecuteWithGeneralExceptionHandling<T>(Func<Task<T>> func)
+        private BackendlessServiceClient() : base(new HttpClient(new LogHandler(new HttpClientHandler()))
         {
-            var response = new CommonResponse<T>();
-
-            try
-            {
-                if (ConnectivityHelper.GetConnectionStatus())
-                {
-                    response.IsSuccess = true;
-                    response.Content = await func();
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = ConnectivityHelper.ConnectionErrorMessage;
-                }
-            }
-            catch (WebException ex)
-            {
-                if (ex.Status == WebExceptionStatus.RequestCanceled)
-                {
-                    response.IsSuccess = false;
-                    response.Message = ConnectivityHelper.TimeOutErrorMessage;
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = ConnectivityHelper.ConnectionErrorMessage;
-                }
-            }
-            catch (BackendlessException ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-            catch (HttpListenerException ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
+            BaseAddress = new Uri($"https://api.backendless.com/{ApplicationId}/{RestApiKey}/"),
+            Timeout = TimeSpan.FromMinutes(1.5)
+        })
+        {
         }
 
-        #endregion private methods
+        public async Task<CommonResponse<List<Expense>>> GetExpensesForAllTime() =>
+            await GetAsync<List<Expense>>($"{DataServicePrefix}/{ExpensesTableName}");
+
+        public async Task<CommonResponse<List<Expense>>> GetExpensesForMonthAndYear(int month, int year,
+            bool sortedByAsc = false)
+        {
+            if (month < 1 || month > 12)
+                throw new ArgumentOutOfRangeException();
+
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1).AddMilliseconds(-1);
+
+            var startMillis = startDate.ToUnixMillis();
+            var endMillis = endDate.ToUnixMillis();
+
+            var sb = new StringBuilder(120);
+            sb.Append(DataServicePrefix).Append("/").Append(ExpensesTableName)
+                .Append("?")
+                .Append(WhereKeyword)
+                .Append(Expense.TimestampColumn).Append(">=").Append(startMillis)
+                .Append(AndKeyword)
+                .Append(Expense.TimestampColumn).Append("<=").Append(endMillis)
+                .Append("&")
+                .Append(SortByKeyword).Append(Expense.TimestampColumn).Append(sortedByAsc ? AscKeyword : DescKeyword);
+
+            return await GetAsync<List<Expense>>(sb.ToString());
+        }
+
+        public async Task<CommonResponse<Expense>> AddExpense(Expense expense) =>
+            await PostAsync<Expense, Expense>($"{DataServicePrefix}/{ExpensesTableName}", expense);
+
+        public async Task<CommonResponse<Expense>> UpdateExpense(Expense expense) =>
+            await PutAsync<Expense, Expense>($"{DataServicePrefix}/{ExpensesTableName}/{expense.Id}", expense);
+
+        public async Task<CommonResponse<long>> DeleteExpense(string expenseId) =>
+            await DeleteAsync<long>($"{DataServicePrefix}/{ExpensesTableName}/{expenseId}");
     }
 }

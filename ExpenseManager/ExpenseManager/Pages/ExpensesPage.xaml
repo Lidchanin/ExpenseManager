@@ -29,21 +29,57 @@
     <!--#endregion Navigation Bar-->
 
     <pages:BasePage.Content>
-        <Grid ColumnSpacing="0"
-              RowSpacing="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <ScrollView>
+            <Grid ColumnSpacing="0"
+                  RowSpacing="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <ListView ItemsSource="{Binding Expenses}"
-                      Grid.Row="0"/>
+                <ListView ItemsSource="{Binding Expenses}"
+                          HasUnevenRows="True"
+                          Grid.Row="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Vertical">
+                                    <Label Text="{Binding Name}"/>
+                                    <Label Text="{Binding Category, Converter={StaticResource IntEnumConverter}}"/>
+                                    <Label Text="{Binding Timestamp,StringFormat='{0:dd.MM.yyyy}'}"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
-            <Button Text="Add expense"
-                    Clicked="AddExpenseButton_OnClicked"
-                    Grid.Row="1"/>
-        </Grid>
+                <Button Text="InitData"
+                        Clicked="InitDataButton_Clicked"
+                        Grid.Row="1"/>
+
+                <Button Text="Add expense"
+                        Clicked="AddExpenseButton_OnClicked"
+                        Grid.Row="2"/>
+
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Entry Text="{Binding Month}"
+                           Grid.Column="0"/>
+                    <Entry Text="{Binding Year}"
+                           Grid.Column="1"/>
+                    <Button Text="Get" 
+                            Clicked="InitDataByMonthButton_Clicked"
+                            Grid.Column="2"/>
+                </Grid>
+            </Grid>
+        </ScrollView>
     </pages:BasePage.Content>
 
 </pages:BasePage>

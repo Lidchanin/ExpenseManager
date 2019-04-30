@@ -2,7 +2,9 @@
 <popups:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
                   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                   xmlns:viewModels="clr-namespace:ExpenseManager.ViewModels;assembly=ExpenseManager"
+                  xmlns:enums="clr-namespace:ExpenseManager.Enums;assembly=ExpenseManager"
                   xmlns:popups="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                  xmlns:system="clr-namespace:System;assembly=mscorlib"
                   x:Class="ExpenseManager.Pages.Popups.AddExpensePopup">
 
     <popups:PopupPage.BindingContext>
@@ -19,7 +21,7 @@
                    Placeholder="Exp cost"/>
             <Picker ItemsSource="{Binding CategoriesList}"
                     SelectedIndex="{Binding Category, Converter={StaticResource IntEnumConverter}}"/>
-            <DatePicker Date="{Binding ExpenseTimestamp}"/>
+            <DatePicker Date="{Binding ExpenseTimestamp, Mode=TwoWay}"/>
             <Button Text="Add"
                     Command="{Binding AddExpenseCommand}"/>
             <Button Text="Cancel"

@@ -1,23 +1,36 @@
-﻿using System;
-using Weborb.Service;
+﻿using ExpenseManager.Converters;
+using ExpenseManager.Enums;
+using Newtonsoft.Json;
+using System;
 
 namespace ExpenseManager.Models
 {
     public class Expense
     {
-        [SetClientClassMemberName("objectId")]
+        #region Column names in DB
+        
+        public const string IdColumn = "objectId";
+        public const string NameColumn = "name";
+        public const string CostColumn = "cost";
+        public const string TimestampColumn = "timestamp";
+        public const string CategoryColumn = "category";
+
+        #endregion Column names in DB
+
+        [JsonProperty("objectId")]
         public string Id { get; set; }
 
-        [SetClientClassMemberName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [SetClientClassMemberName("cost")]
+        [JsonProperty("cost")]
         public double Cost { get; set; }
 
-        [SetClientClassMemberName("timestamp")]
+        [JsonProperty("timestamp")]
+        [JsonConverter(typeof(LongDateTimeConverter))]
         public DateTime Timestamp { get; set; }
 
-        [SetClientClassMemberName("category")]
-        public int Category { get; set; }
+        [JsonProperty("category")]
+        public ExpenseCategories Category { get; set; }
     }
 }
