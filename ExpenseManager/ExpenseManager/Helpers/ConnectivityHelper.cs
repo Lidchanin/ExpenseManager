@@ -25,7 +25,7 @@ namespace ExpenseManager.Helpers
         public static bool GetConnectionStatus() =>
             !CrossConnectivity.IsSupported || CrossConnectivity.Current.IsConnected;
 
-        #region private methods
+        #region Private methods
 
         private static void CurrentOnConnectivityChanged(object sender, ConnectivityChangedEventArgs e) =>
             SetConnectionStatus(e.IsConnected);
@@ -48,6 +48,6 @@ namespace ExpenseManager.Helpers
             }
         }
 
-        #endregion private methods
+        #endregion Private methods
     }
 }

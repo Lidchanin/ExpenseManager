@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace ExpenseManager.Pages
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class StartPage : ContentPage
-	{
-		public StartPage ()
-		{
-			InitializeComponent ();
-		}
-	}
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class StartPage
+    {
+        public StartPage()
+        {
+            InitializeComponent();
+
+            SkiaCalendarView.SelectedDate = DateTime.Today.AddMonths(1);
+            SkiaCalendarView.CurrentDate = DateTime.Today.AddMonths(1);
+        }
+    }
 }

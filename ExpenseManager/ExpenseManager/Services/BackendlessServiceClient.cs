@@ -61,7 +61,7 @@ namespace ExpenseManager.Services
                 throw new ArgumentOutOfRangeException();
 
             var startDate = new DateTime(year, month, 1);
-            var endDate = startDate.AddMonths(1).AddMilliseconds(-1);
+            var endDate = startDate.ToLastDateOfMonth();
 
             var startMillis = startDate.ToUnixMillis();
             var endMillis = endDate.ToUnixMillis();
