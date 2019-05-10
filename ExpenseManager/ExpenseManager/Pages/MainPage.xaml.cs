@@ -1,4 +1,5 @@
 ﻿using System;
+using ExpenseManager.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

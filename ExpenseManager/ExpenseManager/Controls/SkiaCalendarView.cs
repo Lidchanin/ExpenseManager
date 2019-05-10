@@ -2,6 +2,8 @@
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -16,8 +18,8 @@ namespace ExpenseManager.Controls
 
         public static readonly BindableProperty SeparatorColorProperty = BindableProperty.Create(
             nameof(SeparatorColor),
-            typeof(Color), 
-            typeof(SkiaCalendarView), 
+            typeof(Color),
+            typeof(SkiaCalendarView),
             Color.Transparent);
 
         public Color SeparatorColor
@@ -32,8 +34,8 @@ namespace ExpenseManager.Controls
 
         public static readonly BindableProperty SeparatorWidthProperty = BindableProperty.Create(
             nameof(SeparatorWidth),
-            typeof(float), 
-            typeof(SkiaCalendarView), 
+            typeof(float),
+            typeof(SkiaCalendarView),
             0f);
 
         public float SeparatorWidth
@@ -70,7 +72,7 @@ namespace ExpenseManager.Controls
 
         public Color SecondaryTextColor
         {
-            get => (Color)GetValue(SecondaryTextColorProperty);
+            get => (Color) GetValue(SecondaryTextColorProperty);
             set => SetValue(SecondaryTextColorProperty, value);
         }
 
@@ -102,7 +104,7 @@ namespace ExpenseManager.Controls
 
         public DateTime MaxDate
         {
-            get => (DateTime)GetValue(MaxDateProperty);
+            get => (DateTime) GetValue(MaxDateProperty);
             set => SetValue(MaxDateProperty, value);
         }
 
@@ -119,7 +121,7 @@ namespace ExpenseManager.Controls
 
         public DateTime CurrentDate
         {
-            get => (DateTime)GetValue(CurrentDateProperty);
+            get => (DateTime) GetValue(CurrentDateProperty);
             set => SetValue(CurrentDateProperty, value);
         }
 
@@ -143,9 +145,58 @@ namespace ExpenseManager.Controls
 
         #endregion Bindable Properties
 
+        public SKRect DaysSectionRect;
+        public readonly Dictionary<int, SKRect> DaysRectDictionary = new Dictionary<int, SKRect>();
+
+        public int DaySectionRowsCount;
+        public int MaxDaySectionRowsCount = 6;
+        public int DaySectionColumnsCount = 7;
+
+        public float selectedDateSectionHeight;
+        public float selectedDateSectionTopPadding;
+
+        public float dayOfWeekSectionHeight;
+        public float dayOfWeekSectionTopPadding;
+
+        public float daysSectionHeight;
+        public float daysSectionTopPadding;
+
         public SkiaCalendarView()
         {
             PaintSurface += CanvasViewOnPaintSurface;
+            EnableTouchEvents = true;
+            //Touch += OnTouch;
+
+            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.NumberOfTapsRequired = 1;
+            tapGestureRecognizer.Tapped += TapGestureRecognizerOnTapped;
+
+            SwipeGestureRecognizer leftSwipeGestureRecognizer = new SwipeGestureRecognizer();
+            leftSwipeGestureRecognizer.Direction = SwipeDirection.Left;
+            leftSwipeGestureRecognizer.Swiped += LeftSwipeGestureRecognizerOnSwiped;
+
+            SwipeGestureRecognizer rightSwipeGestureRecognizer = new SwipeGestureRecognizer();
+            rightSwipeGestureRecognizer.Direction = SwipeDirection.Right;
+            rightSwipeGestureRecognizer.Swiped += RightSwipeGestureRecognizerOnSwiped;
+
+            GestureRecognizers.Add(tapGestureRecognizer);
+            GestureRecognizers.Add(leftSwipeGestureRecognizer);
+            GestureRecognizers.Add(rightSwipeGestureRecognizer);
+        }
+
+        private void RightSwipeGestureRecognizerOnSwiped(object sender, SwipedEventArgs e)
+        {
+            Debug.WriteLine("===== right");
+        }
+
+        private void LeftSwipeGestureRecognizerOnSwiped(object sender, SwipedEventArgs e)
+        {
+            Debug.WriteLine("===== left");
+        }
+
+        private void TapGestureRecognizerOnTapped(object sender, EventArgs e)
+        {
+            Debug.WriteLine("===== tap");
         }
 
         #region Private methods
@@ -158,14 +209,14 @@ namespace ExpenseManager.Controls
 
             canvas.Clear();
 
-            float selectedDateSectionHeight = info.Height / 20f;
-            float selectedDateSectionTopPadding =
+            selectedDateSectionHeight = info.Height / 20f;
+            selectedDateSectionTopPadding =
                 CalculateTopPadding(0, 0);
-            float dayOfWeekSectionHeight = info.Height / 20f;
-            float dayOfWeekSectionTopPadding =
+            dayOfWeekSectionHeight = info.Height / 20f;
+            dayOfWeekSectionTopPadding =
                 CalculateTopPadding(selectedDateSectionTopPadding, selectedDateSectionHeight);
-            float daysSectionHeight = info.Height - dayOfWeekSectionHeight - selectedDateSectionHeight;
-            float daysSectionTopPadding =
+            daysSectionHeight = info.Height - dayOfWeekSectionHeight - selectedDateSectionHeight;
+            daysSectionTopPadding =
                 CalculateTopPadding(dayOfWeekSectionTopPadding, dayOfWeekSectionHeight);
 
             DrawSelectedDateSection(canvas, info.Width, selectedDateSectionHeight, selectedDateSectionTopPadding);
@@ -206,10 +257,10 @@ namespace ExpenseManager.Controls
 
             SKRect dayRect = new SKRect
             {
-                Size = new SKSize(width / 7, height),
+                Size = new SKSize(width / DaySectionColumnsCount, height),
             };
 
-            for (var column = 0; column < 7; column++)
+            for (var column = 0; column < DaySectionColumnsCount; column++)
             {
                 dayRect.Location = new SKPoint(dayRect.Width * column, topPadding);
 
@@ -221,6 +272,8 @@ namespace ExpenseManager.Controls
 
         private void DrawDaysSection(SKCanvas canvas, float width, float height, float topPadding)
         {
+            DaySectionRowsCount = CurrentDate.NumberOfWeeksInMonthRows();
+
             SKPaint itemPaint = new SKPaint
             {
                 Style = SKPaintStyle.Stroke,
@@ -230,8 +283,24 @@ namespace ExpenseManager.Controls
 
             SKRect itemRect = new SKRect
             {
-                Size = new SKSize(width / 7, height / 6)
+                Size = new SKSize(width / DaySectionColumnsCount, height / MaxDaySectionRowsCount)
             };
+
+            SKPaint containerPaint = new SKPaint
+            {
+                Style = SKPaintStyle.Fill,
+                Color = SKColors.Red
+            };
+
+            DaysSectionRect = new SKRect
+            {
+                Left = 0,
+                Right = width,
+                Top = daysSectionTopPadding,
+                Bottom = daysSectionTopPadding + itemRect.Height * DaySectionRowsCount
+            };
+
+            canvas.DrawRect(DaysSectionRect, containerPaint);
 
             var startMonthDate = SelectedDate.ToFirstDayOfMonth();
             var currentDate = CurrentDate.Date;
@@ -241,25 +310,29 @@ namespace ExpenseManager.Controls
             var previousDate = endMonthDate.AddMonths(-1).ToStartOfWeek(DayOfWeek.Sunday);
             var nextDate = startMonthDate.AddMonths(1);
 
-            for (var row = 0; row < 6; row++)
+            for (var row = 0; row < DaySectionRowsCount; row++)
             {
-                for (var column = 0; column < 7; column++)
+                for (var column = 0; column < DaySectionColumnsCount; column++)
                 {
                     itemRect.Location = new SKPoint(itemRect.Width * column, itemRect.Height * row + topPadding);
 
-                    canvas.DrawRect(itemRect, itemPaint);
-
                     if ((DayOfWeek) column < startMonthDate.DayOfWeek && row == 0)
                     {
-                        DrawTextInRectangle(canvas, itemRect, previousDate.ToShortDateString(),
+                        DrawTextInRectangle(canvas, itemRect, previousDate.Day.ToString(),
                             SecondaryTextColor.ToSKColor());
 
                         previousDate = previousDate.AddDays(1);
                     }
+                    //else if (tempDate.ToPreviousDay().Month == startMonthDate.Month &&
+                    //         tempDate.ToPreviousDay().IsLastDayOfMonth() &&
+                    //         nextDate.IsFirstDayOfWeek(DayOfWeek.Sunday))
+                    //{
+                    //    break;
+                    //}
                     else if (tempDate.ToPreviousDay().Month == startMonthDate.Month &&
                              tempDate.ToPreviousDay().IsLastDayOfMonth())
                     {
-                        DrawTextInRectangle(canvas, itemRect, nextDate.ToShortDateString(),
+                        DrawTextInRectangle(canvas, itemRect, nextDate.Day.ToString(),
                             SecondaryTextColor.ToSKColor());
 
                         nextDate = nextDate.ToNextDay();
@@ -270,6 +343,12 @@ namespace ExpenseManager.Controls
                             PrimaryTextColor.ToSKColor());
                         tempDate = tempDate.ToNextDay();
                     }
+
+                    canvas.DrawRect(itemRect, itemPaint);
+
+                    var key = row * DaySectionColumnsCount + column;
+
+                    DaysRectDictionary.Add(key, itemRect);
                 }
             }
         }
@@ -302,6 +381,99 @@ namespace ExpenseManager.Controls
         private static float CalculateTopPadding(float previousTopPadding, float previousHeight) =>
             previousHeight + previousTopPadding;
 
+        private void DayRect_OnClick(SKRect daysSectionRect, int rowsCount, SKPoint touchLocation)
+        {
+            if (!daysSectionRect.Contains(touchLocation))
+                return;
+
+            var itemWidth = daysSectionRect.Width / DaySectionColumnsCount;
+            var itemHeight = daysSectionRect.Height / rowsCount;
+
+            var tempX = touchLocation.X / itemWidth;
+            var tempY = (touchLocation.Y - daysSectionTopPadding) / itemHeight;
+
+            int xIndex = (int) Math.Floor(tempX);
+            int yIndex = (int) Math.Floor(tempY);
+
+            var rectangleIndex = yIndex * DaySectionColumnsCount + xIndex;
+
+            var temp = DaysRectDictionary[rectangleIndex];
+        }
+
         #endregion Private methods
+
+        #region SkiaUtils
+
+        List<long> touchIds = new List<long>();
+
+        public bool isMoved = false;
+        public SKPoint startPoint;
+        public SKPoint finishPoint;
+
+        private void OnTouch(object sender, SKTouchEventArgs e)
+        {
+            Debug.WriteLine(" ------------- OnTouch");
+
+            if (sender == null)
+                return;
+
+            e.Handled = true;
+
+            SKPoint touchLocation = e.Location;
+
+            startPoint = touchLocation;
+            finishPoint = startPoint;
+
+
+            switch (e.ActionType)
+            {
+                case SKTouchAction.Pressed:
+                    Debug.WriteLine("=== Pressed");
+                    if (HitTest(touchLocation))
+                    {
+                        touchIds.Add(e.Id);
+                    }
+                    break;
+                case SKTouchAction.Moved:
+                    Debug.WriteLine("=== Moved");
+                    isMoved = true;
+                    break;
+                case SKTouchAction.Released:
+                    Debug.WriteLine("=== Released");
+                    if (touchIds.Contains(e.Id))
+                    {
+                        touchIds.Remove(e.Id);
+
+                        if (!isMoved)
+                            DayRect_OnClick(DaysSectionRect, DaySectionRowsCount, touchLocation);
+                    }
+                    isMoved = false;
+                    break;
+                case SKTouchAction.Cancelled:
+                    Debug.WriteLine("=== Cancelled");
+                    if (touchIds.Contains(e.Id))
+                    {
+                        touchIds.Remove(e.Id);
+                    }
+                    break;
+                case SKTouchAction.Exited:
+                    Debug.WriteLine("=== Exited");
+                    if (touchIds.Contains(e.Id))
+                    {
+                        touchIds.Remove(e.Id);
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public bool HitTest(SKPoint touchLocation)
+        {
+            return new SKRect(0, 0, CanvasSize.Width, CanvasSize.Height)
+                .Contains(touchLocation);
+        }
+
+        #endregion SkiaUtils
     }
 }

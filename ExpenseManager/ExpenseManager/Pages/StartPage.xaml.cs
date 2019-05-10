@@ -1,5 +1,4 @@
-﻿using System;
-using Xamarin.Forms.Xaml;
+﻿using Xamarin.Forms.Xaml;
 
 namespace ExpenseManager.Pages
 {
@@ -10,8 +9,6 @@ namespace ExpenseManager.Pages
         {
             InitializeComponent();
 
-            SkiaCalendarView.SelectedDate = DateTime.Today.AddMonths(1);
-            SkiaCalendarView.CurrentDate = DateTime.Today.AddMonths(1);
         }
     }
 }

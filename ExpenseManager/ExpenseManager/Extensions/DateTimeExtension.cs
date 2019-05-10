@@ -25,8 +25,38 @@ namespace ExpenseManager.Extensions
         public static int LastDayOfMonth(this DateTime dateTime) =>
             DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
 
+        //todo if First day of week - Sunday
+        public static int NumberOfWeeksInMonth(this DateTime dateTime)
+        {
+            int daysInMonth = DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
+            DateTime firstOfMonth = dateTime.ToFirstDayOfMonth();
+
+            int firstDayOfMonth = (int) firstOfMonth.DayOfWeek;
+
+            int weeksInMonth = (int) Math.Floor((firstDayOfMonth + daysInMonth) / 7f);
+            return weeksInMonth;
+        }
+
+        //todo if First day of week - Sunday
+        public static int NumberOfWeeksInMonthRows(this DateTime dateTime)
+        {
+            int daysInMonth = DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
+            DateTime firstOfMonth = dateTime.ToFirstDayOfMonth();
+
+            int firstDayOfMonth = (int) firstOfMonth.DayOfWeek;
+
+            int weeksInMonth = (int) Math.Ceiling((firstDayOfMonth + daysInMonth) / 7f);
+            return weeksInMonth;
+        }
+
         public static bool IsLastDayOfMonth(this DateTime dateTime) =>
             DateTime.DaysInMonth(dateTime.Year, dateTime.Month) == dateTime.Day;
+
+        public static bool IsLastDayOfWeek(this DateTime dateTime, DayOfWeek endDayOfWeek) =>
+            dateTime.DayOfWeek == endDayOfWeek;
+
+        public static bool IsFirstDayOfWeek(this DateTime dateTime, DayOfWeek startDayOfWeek) =>
+            dateTime.DayOfWeek == startDayOfWeek;
 
         public static bool IsDateTimeInRange(this DateTime dateTimeToCheck, DateTime startDateTime,
             DateTime endDateTime) =>

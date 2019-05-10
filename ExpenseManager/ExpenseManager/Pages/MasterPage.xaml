@@ -4,6 +4,7 @@
              xmlns:helpers="clr-namespace:ExpenseManager.Helpers;assembly=ExpenseManager"
              xmlns:pages="clr-namespace:ExpenseManager.Pages;assembly=ExpenseManager"
              xmlns:local="clr-namespace:ExpenseManager;assembly=ExpenseManager"
+             xmlns:models="clr-namespace:ExpenseManager.Models;assembly=ExpenseManager"
              x:Class="ExpenseManager.Pages.MasterPage"
              Padding="0,40,0,0"
 			 Icon="{x:Static helpers:ConstantHelper.IconPlaceholder}"
@@ -15,11 +16,11 @@
             <ListView x:Name="listView"
                       x:FieldModifier="public">
                 <ListView.ItemsSource>
-                    <x:Array Type="{x:Type local:MasterPageItem}">
-                        <local:MasterPageItem Title="Start page" 
+                    <x:Array Type="{x:Type models:MasterPageItem}">
+                        <models:MasterPageItem Title="Start page" 
                                               IconSource="{x:Static helpers:ConstantHelper.IconPlaceholder}" 
                                               TargetType="{x:Type pages:StartPage}" />
-                        <local:MasterPageItem Title="No title" 
+                        <models:MasterPageItem Title="No title" 
                                               IconSource="{x:Static helpers:ConstantHelper.IconPlaceholder}" 
                                               TargetType="{x:Type pages:ExpensesPage}" />
                     </x:Array>

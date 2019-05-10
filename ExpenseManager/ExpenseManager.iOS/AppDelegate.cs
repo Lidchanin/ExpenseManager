@@ -1,4 +1,5 @@
 ﻿using Foundation;
+using Syncfusion.SfCalendar.XForms.iOS;
 using UIKit;
 
 namespace ExpenseManager.iOS
@@ -19,6 +20,7 @@ namespace ExpenseManager.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Rg.Plugins.Popup.Popup.Init();
+            SfCalendarRenderer.Init();
 
             Xamarin.Forms.Forms.Init();
 

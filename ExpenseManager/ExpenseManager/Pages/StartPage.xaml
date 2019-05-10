@@ -2,20 +2,14 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:ExpenseManager.Controls;assembly=ExpenseManager"
-             x:Class="ExpenseManager.Pages.StartPage">
-    
+             xmlns:syncfusion="clr-namespace:Syncfusion.SfCalendar.XForms;assembly=Syncfusion.SfCalendar.XForms"
+             x:Class="ExpenseManager.Pages.StartPage"
+             x:Name="Page">
+
     <ContentPage.Content>
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <controls:SkiaCalendarView 
-                x:Name="SkiaCalendarView"
-                PrimaryTextColor="Black"
-                SeparatorColor="Black"
-                SeparatorWidth="5"
-                Grid.Row="0"/>
+            <syncfusion:SfCalendar x:Name="CalendarView"
+                                   SelectionMode="SingleSelection"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

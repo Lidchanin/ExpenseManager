@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExpenseManager
+namespace ExpenseManager.Models
 {
     public class MasterPageItem
     {
