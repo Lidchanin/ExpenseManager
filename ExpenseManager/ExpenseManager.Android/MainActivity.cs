@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace ExpenseManager.Droid
 {
@@ -19,6 +20,7 @@ namespace ExpenseManager.Droid
 
             base.OnCreate(savedInstanceState);
 
+            CurrentPlatform.Init();
             Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
 
             Xamarin.Forms.Forms.Init(this, savedInstanceState);

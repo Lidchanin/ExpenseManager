@@ -4,7 +4,7 @@ using Xamarin.Forms.Xaml;
 namespace ExpenseManager.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class BasePage
+    public abstract partial class BasePage
     {
         protected readonly IBackendlessServiceClient BackendlessApi = BackendlessServiceClient.Instance;
 

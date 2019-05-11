@@ -1,4 +1,5 @@
 ﻿using Foundation;
+using Microsoft.WindowsAzure.MobileServices;
 using Syncfusion.SfCalendar.XForms.iOS;
 using UIKit;
 
@@ -21,6 +22,7 @@ namespace ExpenseManager.iOS
         {
             Rg.Plugins.Popup.Popup.Init();
             SfCalendarRenderer.Init();
+			CurrentPlatform.Init();
 
             Xamarin.Forms.Forms.Init();
 

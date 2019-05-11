@@ -3,13 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:ExpenseManager.Controls;assembly=ExpenseManager"
              xmlns:syncfusion="clr-namespace:Syncfusion.SfCalendar.XForms;assembly=Syncfusion.SfCalendar.XForms"
+             xmlns:viewModels="clr-namespace:ExpenseManager.ViewModels;assembly=ExpenseManager"
              x:Class="ExpenseManager.Pages.StartPage"
              x:Name="Page">
 
+    <ContentPage.BindingContext>
+        <viewModels:StartViewModel x:Name="ViewModel"/>
+    </ContentPage.BindingContext>
+
     <ContentPage.Content>
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
             <syncfusion:SfCalendar x:Name="CalendarView"
-                                   SelectionMode="SingleSelection"/>
+                                   DataSource="{Binding CalendarEventCollection}"
+                                   SelectionMode="SingleSelection"
+                                   FirstDayofWeek="{Binding FirstDayOfWeek}"
+                                   ShowInlineEvents="False"
+                                   ViewMode="MonthView"/>
+
+            <ScrollView Orientation="Horizontal"
+                        Grid.Row="1">
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Move to Current"
+                            Clicked="MoveToCurrentButton_OnClicked"/>
+                </StackLayout>
+            </ScrollView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

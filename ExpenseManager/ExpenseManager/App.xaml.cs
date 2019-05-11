@@ -9,6 +9,9 @@ namespace ExpenseManager
     {
         public App()
         {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
+                "OTk0OTVAMzEzNzJlMzEyZTMwS0dSaDRmQUE0em9BM2ROc0I0TENQN25HS3JibERqMElPNmdZQTh0bGkzUT0=");
+
             InitializeComponent();
 
             MainPage = new MainPage();

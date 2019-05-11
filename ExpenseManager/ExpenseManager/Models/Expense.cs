@@ -27,7 +27,7 @@ namespace ExpenseManager.Models
         public double Cost { get; set; }
 
         [JsonProperty("timestamp")]
-        [JsonConverter(typeof(LongDateTimeConverter))]
+        //[JsonConverter(typeof(LongDateTimeConverter))]
         public DateTime Timestamp { get; set; }
 
         [JsonProperty("category")]

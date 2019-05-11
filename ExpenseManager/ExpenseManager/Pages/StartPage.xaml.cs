@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms.Xaml;
+﻿using System;
+using Xamarin.Forms.Xaml;
 
 namespace ExpenseManager.Pages
 {
@@ -9,6 +10,11 @@ namespace ExpenseManager.Pages
         {
             InitializeComponent();
 
+        }
+
+        private void MoveToCurrentButton_OnClicked(object sender, EventArgs e)
+        {
+            CalendarView.MoveToDate = DateTime.Today;
         }
     }
 }
